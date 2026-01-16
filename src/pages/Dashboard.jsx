@@ -1,63 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { authService } from "../services/appwrite/auth";
 
-function CreateContent() {
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("Blog");
-  const [description, setDescription] = useState("");
+function Dashboard() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  const saveDraft = () => {
-    console.log({ title, type, description, status: "draft" });
+  useEffect(() => {
+    authService
+      .getCurrentUser()
+      .then((u) => setUser(u))
+      .catch(() => setUser(null));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.warn("Logout failed:", err.message || err);
+    } finally {
+      navigate("/login");
+    }
   };
 
-  const publish = () => {
-    console.log({ title, type, description, status: "published" });
+  const testLogin = async () => {
+    try {
+      const session = await authService.login(
+        "testuser@gmail.com",
+        "password123"
+      );
+      console.log("Login success:", session);
+    } catch (err) {
+      console.log("Login error:", err.message || err);
+    }
   };
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <h1 className="text-3xl font-bold">Create Content</h1>
+    <div>
+      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
-      <input
-        className="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-
-      <select
-        className="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2"
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-      >
-        <option>Blog</option>
-        <option>Reel Script</option>
-        <option>Video Idea</option>
-      </select>
-
-      <textarea
-        className="w-full bg-gray-800 border border-gray-700 rounded px-4 py-2"
-        rows="5"
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-
-      <div className="flex gap-4">
-        <button
-          onClick={saveDraft}
-          className="px-6 py-2 bg-gray-700 rounded"
-        >
-          Save as Draft
-        </button>
-        <button
-          onClick={publish}
-          className="px-6 py-2 bg-purple-600 rounded"
-        >
-          Publish
-        </button>
-      </div>
+      {user ? (
+        <div className="mb-4">
+          <p className="mb-2">Logged in as: {user.email || user.name}</p>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded"
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div className="mb-4">
+          <p className="mb-2">No user logged in</p>
+          <button
+            onClick={testLogin}
+            className="px-4 py-2 bg-green-600 text-white rounded"
+          >
+            Test Login
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-export default CreateContent;
+export default Dashboard;
