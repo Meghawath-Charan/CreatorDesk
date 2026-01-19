@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { contentService } from "../services/appwrite/database";
 
 function CreateContent() {
   const [title, setTitle] = useState("");

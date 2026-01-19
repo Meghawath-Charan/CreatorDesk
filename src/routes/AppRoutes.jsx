@@ -7,19 +7,88 @@ import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 
-function AppRoutes() {
+import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute";
+import AppLayout from "../components/layout/AppLayout";
+
+const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      {/* PUBLIC ROUTES */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Signup />
+          </PublicRoute>
+        }
+      />
 
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/create" element={<CreateContent />} />
-      <Route path="/drafts" element={<Drafts />} />
-      <Route path="/published" element={<Published />} />
-      <Route path="/profile" element={<Profile />} />
+      {/* PROTECTED ROUTES */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Dashboard />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/create"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <CreateContent />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/drafts"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Drafts />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/published"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Published />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Profile />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
-}
+};
 
 export default AppRoutes;

@@ -1,63 +1,60 @@
 import { useState } from "react";
-import { authService } from "../services/appwrite/auth";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function Signup() {
+const Signup = () => {
+  const { signup } = useAuth();
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
-      await authService.signup(email, password, name);
-      navigate("/login");
+      await signup(email, password, name);
+      navigate("/");
     } catch (err) {
-      alert(err.message);
+      setError("Signup failed. Email may already exist.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <form
-        onSubmit={handleSignup}
-        className="bg-gray-800 p-6 rounded-lg space-y-4 w-80"
-      >
-        <h1 className="text-2xl font-bold">Signup</h1>
+    <div className="p-6">
+      <h2 className="text-xl mb-4">Signup</h2>
 
+      {error && <p className="text-red-500">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
+          type="text"
           placeholder="Name"
-          className="w-full px-3 py-2 bg-gray-700 rounded"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          required
         />
 
         <input
           type="email"
           placeholder="Email"
-          className="w-full px-3 py-2 bg-gray-700 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
 
         <input
           type="password"
           placeholder="Password"
-          className="w-full px-3 py-2 bg-gray-700 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
 
-        <button className="w-full py-2 bg-green-600 rounded">
-          Create Account
-        </button>
+        <button type="submit">Signup</button>
       </form>
     </div>
   );
-}
+};
 
 export default Signup;
