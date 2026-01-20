@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+
 import Dashboard from "../pages/Dashboard";
 import CreateContent from "../pages/CreateContent";
 import Drafts from "../pages/Drafts";
@@ -6,6 +7,7 @@ import Published from "../pages/Published";
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import EditContent from "../pages/EditContent";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
@@ -14,7 +16,7 @@ import AppLayout from "../components/layout/AppLayout";
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* PUBLIC ROUTES */}
+      {/* ================= PUBLIC ROUTES ================= */}
       <Route
         path="/login"
         element={
@@ -23,6 +25,7 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+
       <Route
         path="/signup"
         element={
@@ -32,7 +35,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* PROTECTED ROUTES */}
+      {/* ================= PROTECTED ROUTES ================= */}
       <Route
         path="/"
         element={
@@ -72,6 +75,17 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <AppLayout>
               <Published />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/edit/:id"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <EditContent />
             </AppLayout>
           </ProtectedRoute>
         }
